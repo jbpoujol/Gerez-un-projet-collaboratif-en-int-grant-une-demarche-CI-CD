@@ -66,14 +66,24 @@ jobs:
           args: >
             -Dsonar.organization=jbpoujol
             -Dsonar.projectKey=jbpoujol_Gerez-un-projet-collaboratif-en-int-grant-une-demarche-CI-CD
-            -Dsonar.sources=back/src/main/java,front/src
-            -Dsonar.tests=back/src/test/java,front/src
-            -Dsonar.test.inclusions=**/*Test.java,**/*.spec.ts
-            -Dsonar.exclusions=**/*.spec.ts,front/src/test.ts
-            -Dsonar.javascript.lcov.reportPaths=front/coverage/bobapp/lcov.info
-            -Dsonar.java.binaries=back/target/classes
-            -Dsonar.java.test.binaries=back/target/test-classes
-            -Dsonar.coverage.jacoco.xmlReportPaths=back/target/site/jacoco/jacoco.xml
-            -Dsonar.junit.reportPaths=back/target/surefire-reports
+            -Dsonar.sourceEncoding=UTF-8
             -Dsonar.scm.provider=git
             -Dsonar.verbose=true
+            -Dsonar.modules=backend,frontend
+            -Dsonar.projectBaseDir=.
+            -Dsonar.working.directory=.scannerwork
+            -Dsonar.sources=.
+            -Dsonar.exclusions=**/*Test.java,**/*.spec.ts,front/src/test.ts
+            
+            -Dsonar.backend.sources=back/src/main/java
+            -Dsonar.backend.tests=back/src/test/java
+            -Dsonar.backend.test.inclusions=**/*Test.java
+            -Dsonar.backend.java.binaries=back/target/classes
+            -Dsonar.backend.java.test.binaries=back/target/test-classes
+            -Dsonar.backend.coverage.jacoco.xmlReportPaths=back/target/site/jacoco/jacoco.xml
+            -Dsonar.backend.junit.reportPaths=back/target/surefire-reports
+            
+            -Dsonar.frontend.sources=front/src
+            -Dsonar.frontend.tests=front/src
+            -Dsonar.frontend.test.inclusions=**/*.spec.ts
+            -Dsonar.frontend.javascript.lcov.reportPaths=front/coverage/bobapp/lcov.info
