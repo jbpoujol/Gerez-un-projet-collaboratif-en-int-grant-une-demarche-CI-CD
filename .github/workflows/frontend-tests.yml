@@ -29,12 +29,10 @@ jobs:
         cache-dependency-path: front/package-lock.json
         
     - name: Install dependencies
-      run: |
-        npm ci
-        npm install -D karma-junit-reporter
+      run: npm ci
       
     - name: Run tests with coverage
-      run: npm run test -- --no-watch --code-coverage --browsers=ChromeHeadless --reporters=junit,progress
+      run: npm run test -- --no-watch --code-coverage --browsers=ChromeHeadless
       
     - name: Upload coverage reports
       uses: actions/upload-artifact@v4
@@ -42,11 +40,3 @@ jobs:
         name: frontend-coverage-reports
         path: front/coverage/
         retention-days: 7
-
-    - name: Publish Test Report
-      uses: mikepenz/action-junit-report@v4
-      if: success() || failure()
-      with:
-        report_paths: 'front/junit.xml'
-        detailed_summary: true
-        fail_on_failure: true
