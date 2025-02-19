@@ -47,6 +47,7 @@ jobs:
       - name: Build and test frontend
         run: |
           cd front
+          export CHROME_BIN=/usr/bin/chromium-browser
           npm run test -- --no-watch --code-coverage --browsers=ChromeHeadless
           ls -la coverage/bobapp/
 
