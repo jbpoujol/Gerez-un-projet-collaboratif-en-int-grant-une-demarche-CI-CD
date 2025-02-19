@@ -3,12 +3,12 @@ name: Frontend Tests & Coverage
 on:
   push:
     branches: [ main ]
-    paths:
-      - 'front/**'
   pull_request:
     branches: [ main ]
-    paths:
-      - 'front/**'
+
+permissions:
+  contents: read
+  pull-requests: read
 
 jobs:
   test:
@@ -31,7 +31,7 @@ jobs:
       run: npm ci
       
     - name: Run tests with coverage
-      run: npm run test:coverage
+      run: npm run test -- --no-watch --code-coverage
       
     - name: Upload coverage reports
       uses: actions/upload-artifact@v3

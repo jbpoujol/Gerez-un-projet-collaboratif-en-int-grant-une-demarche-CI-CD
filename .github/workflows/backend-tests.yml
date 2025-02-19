@@ -3,12 +3,12 @@ name: Backend Tests & Coverage
 on:
   push:
     branches: [ main ]
-    paths:
-      - 'back/**'
   pull_request:
     branches: [ main ]
-    paths:
-      - 'back/**'
+
+permissions:
+  contents: read
+  pull-requests: read
 
 jobs:
   test:
@@ -27,11 +27,11 @@ jobs:
         distribution: 'temurin'
         cache: maven
         
-    - name: Build with Maven
-      run: mvn -B package --file pom.xml
-      
-    - name: Run Tests & Generate Coverage Report
-      run: mvn verify
+    - name: Make mvnw executable
+      run: chmod +x ./mvnw
+        
+    - name: Build and test with Maven
+      run: ./mvnw clean verify
       
     - name: Upload coverage reports
       uses: actions/upload-artifact@v3
