@@ -7,7 +7,7 @@ on:
 
 env:
   REGISTRY: docker.io
-  FRONTEND_IMAGE_NAME: ${{ github.repository_owner }}/bobapp-frontend
+  FRONTEND_IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/bobapp-frontend
 
 jobs:
   build-and-push-frontend:
