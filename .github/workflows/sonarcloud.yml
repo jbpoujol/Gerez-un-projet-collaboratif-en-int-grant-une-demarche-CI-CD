@@ -35,8 +35,9 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/.sonar/cache
-          key: ${{ runner.os }}-sonar
-          restore-keys: ${{ runner.os }}-sonar
+          key: ${{ runner.os }}-sonar-${{ hashFiles('**/*.java', '**/*.ts') }}
+          restore-keys: |
+            ${{ runner.os }}-sonar-
 
       - name: Install frontend dependencies
         run: |
