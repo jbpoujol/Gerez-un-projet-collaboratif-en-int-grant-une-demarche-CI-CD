@@ -37,13 +37,49 @@ jobs:
 
     - name: Update karma config
       run: |
-        # Ajouter le reporter junit aux plugins
-        sed -i '/plugins: \[/a \
-      require("karma-junit-reporter"),' karma.conf.js
-        # Ajouter junit aux reporters
-        sed -i 's/reporters: \[/reporters: ["junit", /g' karma.conf.js
-        # Ajouter la configuration du reporter avant la dernière accolade
-        sed -i '$i\  junitReporter: {\n    outputDir: "test-results",\n    outputFile: "junit.xml"\n  },' karma.conf.js
+        # Créer un fichier temporaire avec la nouvelle configuration
+        cat > karma.conf.js.new << 'EOL'
+        module.exports = function (config) {
+          config.set({
+            basePath: '',
+            frameworks: ['jasmine', '@angular-devkit/build-angular'],
+            plugins: [
+              require('karma-jasmine'),
+              require('karma-chrome-launcher'),
+              require('karma-jasmine-html-reporter'),
+              require('karma-coverage'),
+              require('karma-junit-reporter'),
+              require('@angular-devkit/build-angular/plugins/karma')
+            ],
+            client: {
+              jasmine: {},
+              clearContext: false
+            },
+            reporters: ['progress', 'junit'],
+            junitReporter: {
+              outputDir: 'test-results',
+              outputFile: 'junit.xml'
+            },
+            coverageReporter: {
+              dir: require('path').join(__dirname, './coverage/bobapp'),
+              subdir: '.',
+              reporters: [
+                { type: 'html' },
+                { type: 'text-summary' }
+              ]
+            },
+            port: 9876,
+            colors: true,
+            logLevel: config.LOG_INFO,
+            autoWatch: true,
+            browsers: ['Chrome'],
+            singleRun: false,
+            restartOnFileChange: true
+          });
+        };
+        EOL
+        # Remplacer l'ancien fichier par le nouveau
+        mv karma.conf.js.new karma.conf.js
 
     - name: Run tests with coverage
       run: |
