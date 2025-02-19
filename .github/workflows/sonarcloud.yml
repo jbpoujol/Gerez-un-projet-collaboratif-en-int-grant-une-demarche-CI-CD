@@ -64,13 +64,10 @@ jobs:
           args: >
             -Dsonar.organization=jbpoujol
             -Dsonar.projectKey=jbpoujol_Gerez-un-projet-collaboratif-en-int-grant-une-demarche-CI-CD
-            -Dsonar.sources=back/src/main/java
-            -Dsonar.tests=back/src/test/java
-            -Dsonar.test.inclusions=**/*Test.java
-            -Dsonar.typescript.sources=front/src
-            -Dsonar.typescript.exclusions=**/*.spec.ts,test.ts
-            -Dsonar.typescript.tests=front/src
-            -Dsonar.typescript.test.inclusions=**/*.spec.ts
+            -Dsonar.sources=back/src/main/java,front/src
+            -Dsonar.tests=back/src/test/java,front/src
+            -Dsonar.test.inclusions=**/*Test.java,**/*.spec.ts
+            -Dsonar.exclusions=**/*.spec.ts,front/src/test.ts
             -Dsonar.javascript.lcov.reportPaths=front/coverage/lcov.info
             -Dsonar.java.binaries=back/target/classes
             -Dsonar.java.test.binaries=back/target/test-classes
