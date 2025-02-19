@@ -8,7 +8,7 @@ on:
 
 permissions:
   contents: read
-  pull-requests: read
+  pull-requests: write
   checks: write
 
 jobs:
@@ -30,24 +30,28 @@ jobs:
         cache-dependency-path: front/package-lock.json
         
     - name: Install dependencies
-      run: |
-        npm ci
-        npm install -D karma-mocha-reporter karma-junit-reporter
+      run: npm ci
       
     - name: Run tests with coverage
       run: |
         CHROME_BIN=/usr/bin/google-chrome
-        npm run test -- --no-watch --code-coverage --browsers=ChromeHeadless --reporters=mocha,junit
-        mkdir -p test-results
-        cp karma-results.xml test-results/
+        npm run test -- --no-watch --code-coverage --browsers=ChromeHeadless
 
-    - name: Publish Test Results
-      uses: mikepenz/action-junit-report@v4
-      if: always()
+    - name: Process Coverage Report
+      if: success()
+      run: |
+        cd front/coverage/bobapp
+        echo "# Frontend Test Coverage" > report.md
+        echo "## Summary" >> report.md
+        cat coverage-summary.json | jq -r '.total | "* Statements: \(.statements.pct)%\n* Branches: \(.branches.pct)%\n* Functions: \(.functions.pct)%\n* Lines: \(.lines.pct)%"' >> report.md
+
+    - name: Comment PR
+      uses: machine-learning-apps/pr-comment@master
+      if: success()
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        report_paths: 'test-results/*.xml'
-        detailed_summary: true
-        include_passed: true
+        path: front/coverage/bobapp/report.md
       
     - name: Upload coverage reports
       uses: actions/upload-artifact@v4
