@@ -35,9 +35,39 @@ jobs:
     - name: Install test reporters
       run: npm install -D karma-junit-reporter
 
-    - name: Update karma config
+    - name: Update test configuration
       run: |
-        # Créer un fichier temporaire avec la nouvelle configuration
+        # Mettre à jour app.component.spec.ts pour importer Material
+        cat > src/app/app.component.spec.ts.new << 'EOL'
+        import { ComponentFixture, TestBed } from '@angular/core/testing';
+        import { AppComponent } from './app.component';
+        import { MatCardModule } from '@angular/material/card';
+        import { MatDividerModule } from '@angular/material/divider';
+        import { MatButtonModule } from '@angular/material/button';
+        
+        describe('AppComponent', () => {
+          let component: AppComponent;
+          let fixture: ComponentFixture<AppComponent>;
+        
+          beforeEach(async () => {
+            await TestBed.configureTestingModule({
+              declarations: [AppComponent],
+              imports: [MatCardModule, MatDividerModule, MatButtonModule]
+            }).compileComponents();
+        
+            fixture = TestBed.createComponent(AppComponent);
+            component = fixture.componentInstance;
+            fixture.detectChanges();
+          });
+        
+          it('should create', () => {
+            expect(component).toBeTruthy();
+          });
+        });
+        EOL
+        mv src/app/app.component.spec.ts.new src/app/app.component.spec.ts
+
+        # Mettre à jour karma.conf.js
         cat > karma.conf.js.new << 'EOL'
         module.exports = function (config) {
           config.set({
@@ -52,30 +82,20 @@ jobs:
               require('@angular-devkit/build-angular/plugins/karma')
             ],
             client: {
-              jasmine: {
-                junit: true
-              },
               clearContext: false
             },
-            reporters: ['progress', 'kjhtml', 'junit'],
+            reporters: ['progress', 'junit'],
             junitReporter: {
               outputDir: 'test-results',
               outputFile: 'junit.xml',
-              useBrowserName: false,
-              nameFormatter: function(suite) {
-                return suite.replace(/\.spec$/, '');
-              },
-              classNameFormatter: function(browser, result) {
-                return result.suite.join('.');
-              }
+              useBrowserName: false
             },
             coverageReporter: {
               dir: require('path').join(__dirname, './coverage/bobapp'),
               subdir: '.',
               reporters: [
                 { type: 'html' },
-                { type: 'text-summary' },
-                { type: 'json-summary' }
+                { type: 'text-summary' }
               ]
             },
             port: 9876,
@@ -88,7 +108,6 @@ jobs:
           });
         };
         EOL
-        # Remplacer l'ancien fichier par le nouveau
         mv karma.conf.js.new karma.conf.js
 
     - name: Run tests with coverage
