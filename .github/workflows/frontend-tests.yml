@@ -37,8 +37,13 @@ jobs:
 
     - name: Update karma config
       run: |
+        # Ajouter le reporter junit aux plugins
+        sed -i '/plugins: \[/a \
+      require("karma-junit-reporter"),' karma.conf.js
+        # Ajouter junit aux reporters
         sed -i 's/reporters: \[/reporters: ["junit", /g' karma.conf.js
-        echo "  junitReporter: { outputDir: 'test-results', outputFile: 'junit.xml' }," >> karma.conf.js
+        # Ajouter la configuration du reporter avant la dernière accolade
+        sed -i '$i\  junitReporter: {\n    outputDir: "test-results",\n    outputFile: "junit.xml"\n  },' karma.conf.js
 
     - name: Run tests with coverage
       run: |
