@@ -52,29 +52,39 @@ jobs:
               require('@angular-devkit/build-angular/plugins/karma')
             ],
             client: {
-              jasmine: {},
+              jasmine: {
+                junit: true
+              },
               clearContext: false
             },
-            reporters: ['progress', 'junit'],
+            reporters: ['progress', 'kjhtml', 'junit'],
             junitReporter: {
               outputDir: 'test-results',
-              outputFile: 'junit.xml'
+              outputFile: 'junit.xml',
+              useBrowserName: false,
+              nameFormatter: function(suite) {
+                return suite.replace(/\.spec$/, '');
+              },
+              classNameFormatter: function(browser, result) {
+                return result.suite.join('.');
+              }
             },
             coverageReporter: {
               dir: require('path').join(__dirname, './coverage/bobapp'),
               subdir: '.',
               reporters: [
                 { type: 'html' },
-                { type: 'text-summary' }
+                { type: 'text-summary' },
+                { type: 'json-summary' }
               ]
             },
             port: 9876,
             colors: true,
             logLevel: config.LOG_INFO,
-            autoWatch: true,
-            browsers: ['Chrome'],
-            singleRun: false,
-            restartOnFileChange: true
+            autoWatch: false,
+            browsers: ['ChromeHeadless'],
+            singleRun: true,
+            restartOnFileChange: false
           });
         };
         EOL
