@@ -9,6 +9,7 @@ on:
 permissions:
   contents: read
   pull-requests: read
+  checks: write
 
 jobs:
   test:
@@ -33,6 +34,14 @@ jobs:
     - name: Upload coverage reports
       uses: actions/upload-artifact@v4
       with:
-        name: coverage-reports
+        name: backend-coverage-reports
         path: back/target/site/jacoco/
         retention-days: 7
+
+    - name: Publish Test Report
+      uses: mikepenz/action-junit-report@v4
+      if: success() || failure()
+      with:
+        report_paths: 'back/target/surefire-reports/TEST-*.xml'
+        detailed_summary: true
+        fail_on_failure: true
