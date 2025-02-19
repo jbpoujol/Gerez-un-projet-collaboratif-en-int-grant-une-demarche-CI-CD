@@ -40,17 +40,29 @@ jobs:
     - name: Debug Coverage Path
       run: |
         pwd
-        ls -la coverage/
+        echo "=== Current directory contents ==="
+        ls -la
+        echo "=== Coverage directory (if exists) ==="
+        ls -la coverage/ || echo "No coverage directory"
+        echo "=== karma.conf.js contents ==="
+        cat karma.conf.js
 
     - name: Create Coverage Report
       if: success()
       id: coverage-report
       run: |
-        echo 'REPORT<<EOF' >> $GITHUB_ENV
-        echo '### Frontend Test Coverage 📊' >> $GITHUB_ENV
-        echo '#### Summary' >> $GITHUB_ENV
-        jq -r '.total | "- Statements: \(.statements.pct)%\n- Branches: \(.branches.pct)%\n- Functions: \(.functions.pct)%\n- Lines: \(.lines.pct)%"' coverage/coverage-summary.json >> $GITHUB_ENV
-        echo 'EOF' >> $GITHUB_ENV
+        if [ -f "coverage/coverage-summary.json" ]; then
+          echo 'REPORT<<EOF' >> $GITHUB_ENV
+          echo '### Frontend Test Coverage 📊' >> $GITHUB_ENV
+          echo '#### Summary' >> $GITHUB_ENV
+          jq -r '.total | "- Statements: \(.statements.pct)%\n- Branches: \(.branches.pct)%\n- Functions: \(.functions.pct)%\n- Lines: \(.lines.pct)%"' coverage/coverage-summary.json >> $GITHUB_ENV
+          echo 'EOF' >> $GITHUB_ENV
+        else
+          echo 'REPORT<<EOF' >> $GITHUB_ENV
+          echo '### ⚠️ Frontend Test Coverage Report Not Found' >> $GITHUB_ENV
+          echo 'The coverage report was not generated. This might be due to test configuration issues.' >> $GITHUB_ENV
+          echo 'EOF' >> $GITHUB_ENV
+        fi
 
     - name: Find Comment
       uses: peter-evans/find-comment@v2
