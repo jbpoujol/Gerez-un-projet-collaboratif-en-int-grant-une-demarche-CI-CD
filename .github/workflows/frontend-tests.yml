@@ -37,11 +37,16 @@ jobs:
         CHROME_BIN=/usr/bin/google-chrome
         npm run test -- --no-watch --code-coverage --browsers=ChromeHeadless
 
+    - name: Debug Coverage Path
+      run: |
+        pwd
+        ls -la front/coverage/
+
     - name: Create Coverage Report
       if: success()
       id: coverage-report
       run: |
-        cd front/coverage/bobapp
+        cd front/coverage/
         echo 'REPORT<<EOF' >> $GITHUB_ENV
         echo '### Frontend Test Coverage 📊' >> $GITHUB_ENV
         echo '#### Summary' >> $GITHUB_ENV
