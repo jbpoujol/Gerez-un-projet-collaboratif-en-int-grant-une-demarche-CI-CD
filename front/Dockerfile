@@ -1,11 +1,9 @@
-FROM node:16 as build
+FROM node:latest as build
 
 WORKDIR /usr/local/app
-COPY package*.json ./
+COPY ./ /usr/local/app/
 
-RUN npm ci
-
-COPY . .
+RUN yarn
 RUN npm run build
  
 FROM nginx:latest as production
