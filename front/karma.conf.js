@@ -30,8 +30,10 @@ module.exports = function (config) {
       subdir: '.',
       reporters: [
         { type: 'html' },
-        { type: 'text-summary' }
-      ]
+        { type: 'text-summary' },
+        { type: 'lcov' }
+      ],
+      fixWebpackSourcePaths: true
     },
     junitReporter: {
       outputDir: 'test-results',
@@ -39,7 +41,7 @@ module.exports = function (config) {
       useBrowserName: false,
       classNameFormatter: (browser, result) => result.suite.join('.')
     },
-    reporters: ['progress', 'kjhtml', 'junit'],
+    reporters: ['progress', 'kjhtml', 'junit', 'coverage'],
     port: 9876,
     colors: true,
     logLevel: config.LOG_INFO,
