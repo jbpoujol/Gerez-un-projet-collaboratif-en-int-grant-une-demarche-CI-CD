@@ -37,21 +37,34 @@ jobs:
         CHROME_BIN=/usr/bin/google-chrome
         npm run test -- --no-watch --code-coverage --browsers=ChromeHeadless
 
-    - name: Process Coverage Report
+    - name: Create Coverage Report
       if: success()
+      id: coverage-report
       run: |
         cd front/coverage/bobapp
-        echo "# Frontend Test Coverage" > report.md
-        echo "## Summary" >> report.md
-        cat coverage-summary.json | jq -r '.total | "* Statements: \(.statements.pct)%\n* Branches: \(.branches.pct)%\n* Functions: \(.functions.pct)%\n* Lines: \(.lines.pct)%"' >> report.md
+        echo 'REPORT<<EOF' >> $GITHUB_ENV
+        echo '### Frontend Test Coverage 📊' >> $GITHUB_ENV
+        echo '#### Summary' >> $GITHUB_ENV
+        jq -r '.total | "- Statements: \(.statements.pct)%\n- Branches: \(.branches.pct)%\n- Functions: \(.functions.pct)%\n- Lines: \(.lines.pct)%"' coverage-summary.json >> $GITHUB_ENV
+        echo 'EOF' >> $GITHUB_ENV
+
+    - name: Find Comment
+      uses: peter-evans/find-comment@v2
+      if: success()
+      id: fc
+      with:
+        issue-number: ${{ github.event.pull_request.number }}
+        comment-author: 'github-actions[bot]'
+        body-includes: Frontend Test Coverage
 
     - name: Comment PR
-      uses: machine-learning-apps/pr-comment@master
+      uses: peter-evans/create-or-update-comment@v3
       if: success()
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        path: front/coverage/bobapp/report.md
+        comment-id: ${{ steps.fc.outputs.comment-id }}
+        issue-number: ${{ github.event.pull_request.number }}
+        body: ${{ env.REPORT }}
+        edit-mode: replace
       
     - name: Upload coverage reports
       uses: actions/upload-artifact@v4
