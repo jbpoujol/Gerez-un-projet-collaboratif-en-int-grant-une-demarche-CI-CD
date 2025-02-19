@@ -45,10 +45,11 @@ jobs:
           npm install -D karma-junit-reporter
 
       - name: Build and test frontend
+        env:
+          CHROME_BIN: /usr/bin/chromium-browser
         run: |
           cd front
-          export CHROME_BIN=/usr/bin/chromium-browser
-          npm run test -- --no-watch --code-coverage --browsers=ChromeHeadless --no-sandbox
+          npm run test -- --no-watch --code-coverage --browsers=ChromeHeadless
           ls -la coverage/bobapp/
 
       - name: Build and test backend
