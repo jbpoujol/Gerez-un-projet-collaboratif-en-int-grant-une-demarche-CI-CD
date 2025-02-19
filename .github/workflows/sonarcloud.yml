@@ -50,13 +50,17 @@ jobs:
         run: |
           cd front
           npm run test -- --no-watch --code-coverage --browsers=ChromeHeadless
+          echo "Frontend test reports:"
           ls -la coverage/bobapp/
+          cat coverage/bobapp/lcov.info || echo "No lcov.info file found!"
 
       - name: Build and test backend
         run: |
           cd back
           mvn clean verify -Pcoverage
+          echo "Backend test reports:"
           ls -la target/site/jacoco/
+          cat target/site/jacoco/jacoco.xml || echo "No jacoco.xml file found!"
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarqube-scan-action@v4.1.0
