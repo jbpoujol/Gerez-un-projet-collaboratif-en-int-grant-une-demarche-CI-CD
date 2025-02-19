@@ -57,10 +57,12 @@ jobs:
       - name: Build and test backend
         run: |
           cd back
-          mvn clean verify -Pcoverage
+          mvn clean verify dependency:copy-dependencies -Pcoverage
           echo "Backend test reports:"
           ls -la target/site/jacoco/
           cat target/site/jacoco/jacoco.xml || echo "No jacoco.xml file found!"
+          echo "Backend dependencies:"
+          ls -la target/dependency/
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarqube-scan-action@v4.1.0
