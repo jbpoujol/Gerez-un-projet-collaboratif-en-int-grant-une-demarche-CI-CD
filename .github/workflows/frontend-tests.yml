@@ -1,4 +1,4 @@
-name: Frontend Tests & Coverage
+name: Frontend
 
 on:
   push:
@@ -13,6 +13,7 @@ permissions:
 
 jobs:
   test:
+    name: Tests & Coverage
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -32,7 +33,9 @@ jobs:
       run: npm ci
       
     - name: Run tests with coverage
-      run: npm run test -- --no-watch --code-coverage --browsers=ChromeHeadless
+      run: |
+        CHROME_BIN=/usr/bin/google-chrome
+        npm run test -- --no-watch --code-coverage --browsers=ChromeHeadless
       
     - name: Upload coverage reports
       uses: actions/upload-artifact@v4
