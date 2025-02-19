@@ -39,7 +39,7 @@ jobs:
         run: |
           cd back
           mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
-            -Dsonar.projectKey=jbpoujol_Gerez-un-projet-collaboratif-en-int-grant-une-demarche-CI-CD-back \
+            -Dsonar.projectKey=jbpoujol_bobapp-backend \
             -Dsonar.organization=jbpoujol \
             -Dsonar.host.url=https://sonarcloud.io
 
@@ -62,6 +62,7 @@ jobs:
         run: |
           cd front
           npm ci
+          npm install -D karma-junit-reporter
 
       - name: Run tests with coverage
         run: |
@@ -77,7 +78,7 @@ jobs:
           projectBaseDir: front
           args: >
             -Dsonar.organization=jbpoujol
-            -Dsonar.projectKey=jbpoujol_Gerez-un-projet-collaboratif-en-int-grant-une-demarche-CI-CD-front
+            -Dsonar.projectKey=jbpoujol_bobapp-frontend
             -Dsonar.sources=src
             -Dsonar.tests=src
             -Dsonar.test.inclusions=**/*.spec.ts
