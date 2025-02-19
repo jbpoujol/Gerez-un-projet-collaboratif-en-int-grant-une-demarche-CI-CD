@@ -32,18 +32,27 @@ jobs:
     - name: Install dependencies
       run: npm ci
       
+    - name: Install test reporters
+      run: npm install -D karma-junit-reporter
+
     - name: Run tests with coverage
       run: |
         CHROME_BIN=/usr/bin/google-chrome
-        npm test -- --no-watch --code-coverage --browsers=ChromeHeadless
+        npm test -- --no-watch --code-coverage --browsers=ChromeHeadless --reporters junit,progress
+
+    - name: Upload coverage results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: coverage-report
+        path: coverage/
 
     - name: Upload test results
       if: always()
       uses: actions/upload-artifact@v4
       with:
         name: test-results
-        path: coverage/
-
+        path: test-results/
 
     - name: Publish Test Report
       uses: mikepenz/action-junit-report@v4
