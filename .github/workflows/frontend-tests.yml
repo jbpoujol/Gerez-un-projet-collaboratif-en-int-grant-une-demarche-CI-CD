@@ -33,36 +33,19 @@ jobs:
       run: npm ci
       
     - name: Run tests with coverage
+      id: test-coverage
       run: |
         CHROME_BIN=/usr/bin/google-chrome
-        npm run test -- --no-watch --code-coverage --browsers=ChromeHeadless
-
-    - name: Debug Coverage Path
-      run: |
-        pwd
-        echo "=== Current directory contents ==="
-        ls -la
-        echo "=== Coverage directory (if exists) ==="
-        ls -la coverage/ || echo "No coverage directory"
-        echo "=== karma.conf.js contents ==="
-        cat karma.conf.js
-
-    - name: Create Coverage Report
-      if: success()
-      id: coverage-report
-      run: |
-        if [ -f "coverage/coverage-summary.json" ]; then
-          echo 'REPORT<<EOF' >> $GITHUB_ENV
-          echo '### Frontend Test Coverage 📊' >> $GITHUB_ENV
-          echo '#### Summary' >> $GITHUB_ENV
-          jq -r '.total | "- Statements: \(.statements.pct)%\n- Branches: \(.branches.pct)%\n- Functions: \(.functions.pct)%\n- Lines: \(.lines.pct)%"' coverage/coverage-summary.json >> $GITHUB_ENV
-          echo 'EOF' >> $GITHUB_ENV
-        else
-          echo 'REPORT<<EOF' >> $GITHUB_ENV
-          echo '### ⚠️ Frontend Test Coverage Report Not Found' >> $GITHUB_ENV
-          echo 'The coverage report was not generated. This might be due to test configuration issues.' >> $GITHUB_ENV
-          echo 'EOF' >> $GITHUB_ENV
-        fi
+        OUTPUT=$(npm run test -- --no-watch --code-coverage --browsers=ChromeHeadless)
+        echo "$OUTPUT"
+        COVERAGE=$(echo "$OUTPUT" | grep -A5 "Coverage summary" | tail -n 4)
+        echo 'REPORT<<EOF' >> $GITHUB_ENV
+        echo '### Frontend Test Coverage 📊' >> $GITHUB_ENV
+        echo '#### Summary' >> $GITHUB_ENV
+        echo '```' >> $GITHUB_ENV
+        echo "$COVERAGE" >> $GITHUB_ENV
+        echo '```' >> $GITHUB_ENV
+        echo 'EOF' >> $GITHUB_ENV
 
     - name: Find Comment
       uses: peter-evans/find-comment@v2
