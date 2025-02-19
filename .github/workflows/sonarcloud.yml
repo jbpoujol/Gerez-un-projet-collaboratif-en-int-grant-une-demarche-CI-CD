@@ -48,12 +48,15 @@ jobs:
       - name: Build and test frontend
         run: |
           cd front
-          npm run test -- --no-watch --code-coverage --browsers=ChromeHeadless --karma-config karma.conf.js
+          npm ci
+          npm run test -- --no-watch --code-coverage --browsers=ChromeHeadless
+          ls -la coverage/bobapp/
 
       - name: Build and test backend
         run: |
           cd back
           mvn clean verify -Pcoverage
+          ls -la target/site/jacoco/
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarqube-scan-action@v4.1.0
@@ -68,8 +71,9 @@ jobs:
             -Dsonar.tests=back/src/test/java,front/src
             -Dsonar.test.inclusions=**/*Test.java,**/*.spec.ts
             -Dsonar.exclusions=**/*.spec.ts,front/src/test.ts
-            -Dsonar.javascript.lcov.reportPaths=front/coverage/lcov.info
+            -Dsonar.javascript.lcov.reportPaths=front/coverage/bobapp/lcov.info
             -Dsonar.java.binaries=back/target/classes
             -Dsonar.java.test.binaries=back/target/test-classes
             -Dsonar.coverage.jacoco.xmlReportPaths=back/target/site/jacoco/jacoco.xml
             -Dsonar.junit.reportPaths=back/target/surefire-reports
+            -Dsonar.verbose=true
