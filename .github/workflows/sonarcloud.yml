@@ -48,12 +48,12 @@ jobs:
       - name: Build and test frontend
         run: |
           cd front
-          npm run test -- --no-watch --code-coverage --browsers=ChromeHeadless
+          npm run test -- --no-watch --code-coverage --browsers=ChromeHeadless --karma-config karma.conf.js
 
       - name: Build and test backend
         run: |
           cd back
-          mvn clean verify
+          mvn clean verify -Pcoverage
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarqube-scan-action@v4.1.0
