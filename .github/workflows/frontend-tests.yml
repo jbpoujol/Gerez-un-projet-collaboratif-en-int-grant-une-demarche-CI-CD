@@ -40,17 +40,16 @@ jobs:
     - name: Debug Coverage Path
       run: |
         pwd
-        ls -la front/coverage/
+        ls -la coverage/
 
     - name: Create Coverage Report
       if: success()
       id: coverage-report
       run: |
-        cd front/coverage/
         echo 'REPORT<<EOF' >> $GITHUB_ENV
         echo '### Frontend Test Coverage 📊' >> $GITHUB_ENV
         echo '#### Summary' >> $GITHUB_ENV
-        jq -r '.total | "- Statements: \(.statements.pct)%\n- Branches: \(.branches.pct)%\n- Functions: \(.functions.pct)%\n- Lines: \(.lines.pct)%"' coverage-summary.json >> $GITHUB_ENV
+        jq -r '.total | "- Statements: \(.statements.pct)%\n- Branches: \(.branches.pct)%\n- Functions: \(.functions.pct)%\n- Lines: \(.lines.pct)%"' coverage/coverage-summary.json >> $GITHUB_ENV
         echo 'EOF' >> $GITHUB_ENV
 
     - name: Find Comment
