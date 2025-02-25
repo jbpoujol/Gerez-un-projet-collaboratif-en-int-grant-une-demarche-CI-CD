@@ -3,9 +3,24 @@ name: SonarCloud Analysis
 on:
   push:
     branches: [ main ]
+    paths:
+      - 'front/**'
+      - 'back/**'
+      - '.github/workflows/sonarcloud.yml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'front/**'
+      - 'back/**'
+      - '.github/workflows/sonarcloud.yml'
+  workflow_dispatch:
 
 permissions:
   pull-requests: read
+
+defaults:
+  run:
+    working-directory: ./
 
 jobs:
   build-and-analyze:
