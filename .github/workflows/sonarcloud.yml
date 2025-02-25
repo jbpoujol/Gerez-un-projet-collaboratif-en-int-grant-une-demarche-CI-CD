@@ -18,10 +18,6 @@ on:
 permissions:
   pull-requests: read
 
-defaults:
-  run:
-    working-directory: ./
-
 jobs:
   build-and-analyze:
     runs-on: ubuntu-latest
