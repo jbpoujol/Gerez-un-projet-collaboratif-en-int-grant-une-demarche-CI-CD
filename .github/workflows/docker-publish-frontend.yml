@@ -1,14 +1,22 @@
-name: Docker Publish
+name: Docker Publish Frontend
 
 on:
   push:
     branches: [ main ]
     tags: [ 'v*.*.*' ]
+    paths:
+      - 'front/**'
+      - '.github/workflows/docker-publish-frontend.yml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'front/**'
+      - '.github/workflows/docker-publish-frontend.yml'
+  workflow_dispatch:
 
 env:
   REGISTRY: docker.io
   FRONTEND_IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/bobapp-frontend
-  BACKEND_IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/bobapp-backend
 
 jobs:
   build-and-push-frontend:
@@ -37,36 +45,6 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: ./front
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-
-  build-and-push-backend:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE_NAME }}
-
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v5
-        with:
-          context: ./back
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
