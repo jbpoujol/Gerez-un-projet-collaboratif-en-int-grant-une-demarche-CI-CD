@@ -8,15 +8,15 @@ Les tests sont exécutés automatiquement sur chaque Pull Request vers la branch
 #### Frontend (Angular)
 - Exécution des tests unitaires avec Karma
 - Génération des rapports de couverture au format LCOV
-- Validation que les tests passent avant la fusion
+- Validation que les tests passent avant le merge
 
 #### Backend (Spring Boot)
 - Exécution des tests unitaires avec JUnit
 - Génération des rapports de couverture avec JaCoCo
-- Validation que les tests passent avant la fusion
+- Validation que les tests passent avant le merge
 
 ### 2. Analyse de Code (SonarCloud)
-L'analyse de qualité du code est effectuée après chaque fusion sur `main`.
+L'analyse de qualité du code est effectuée après chaque merge sur `main`.
 
 - Analyse de la qualité du code
 - Mesure de la couverture de tests
@@ -24,7 +24,7 @@ L'analyse de qualité du code est effectuée après chaque fusion sur `main`.
 - Identification des duplications de code
 
 ### 3. Conteneurisation (Docker)
-Les images Docker sont construites et publiées sur Docker Hub après chaque fusion sur `main`.
+Les images Docker sont construites et publiées sur Docker Hub après chaque merge sur `main`.
 
 - Construction de l'image frontend (nginx + build Angular)
 - Construction de l'image backend (JDK 11 + Spring Boot)
