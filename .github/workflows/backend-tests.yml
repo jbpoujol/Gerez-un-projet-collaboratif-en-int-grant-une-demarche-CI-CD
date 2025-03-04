@@ -27,10 +27,10 @@ jobs:
         working-directory: ./back
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     
     - name: Set up JDK 11
-      uses: actions/setup-java@v3
+      uses: actions/setup-java@v4
       with:
         java-version: '11'
         distribution: 'temurin'
@@ -61,5 +61,4 @@ jobs:
         report_paths: 'back/target/surefire-reports/TEST-*.xml'
         detailed_summary: true
         include_passed: true
-
         fail_on_failure: true
